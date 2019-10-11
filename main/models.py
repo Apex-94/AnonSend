@@ -7,18 +7,23 @@ from main.helper import gen_link, gen_analytic_link
 
 def get_today():
     """
-    :return: Get current time and offset by 10 Minutes
+    :return: Get current time
     """
-    return datetime.datetime.now() + datetime.timedelta(minutes=10)
+    return datetime.datetime.now()
 
+
+REPORT_CHOICES = [
+    ("malicious", "Malicious file"),
+    ("inappropriate", "Inappropriate / Illegal Content"),
+    ("dmca", "DMCA violation"),
+]
 
 DATE_CHOICES = [
-    (get_today(), "10 Minutes"),
+    (get_today() + datetime.timedelta(minutes=10), "10 Minutes"),
     (get_today() + datetime.timedelta(days=1), "1 Day"),
     (get_today() + datetime.timedelta(days=3), "3 Days"),
     (get_today() + datetime.timedelta(weeks=1), "1 Week"),
     (get_today() + datetime.timedelta(weeks=2), "2 Weeks"),
-
 ]
 
 
@@ -51,3 +56,9 @@ class Analytics(models.Model):
     country = models.CharField(max_length=40, default="Unknown")
 
     time_clicked = models.DateTimeField(auto_now_add=True)
+
+
+class ReportLinks(models.Model):
+    public_link = models.ForeignKey(UploadFiles, on_delete=models.CASCADE)
+    reason = models.CharField(max_length=10, choices=REPORT_CHOICES, default=REPORT_CHOICES[0])
+    description = models.CharField(max_length=150)

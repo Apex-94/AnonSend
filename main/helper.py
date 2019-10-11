@@ -15,14 +15,26 @@ import user_agents
 
 def hashPassword(password):
     """
-    Hash a password using bcrypt
+    - Hash a password using bcrypt
+    - If password is blank (== '' ), do not hash
     :param password:
     :return: b_string
     """
+    if password == '':
+        return ''
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
 
 def verifyPassword(password, hashed):
+    """
+    Verify password, blank or hashed
+    :rtype: bool
+    :param password: 
+    :param hashed: 
+    :return: If the password is same as hash
+    """
+    if hashed == '':
+        return password == ''
     return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
 
 
@@ -31,7 +43,7 @@ def queryToCsv(query):
     :param fname: The fileName
     :type query: QuerySet
     """
-    header = ["os", "device_type", "browser", "country", "region", "city", "time_clicked"]
+    header = ["os", "device_type", "browser", "country", "time_clicked"]
     with open("/tmp/csvData.csv", "w") as f:
         csvWriter = csv.writer(f)
         csvWriter.writerow(header)

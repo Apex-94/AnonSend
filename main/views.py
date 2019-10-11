@@ -5,8 +5,8 @@ from django.core.files.uploadedfile import UploadedFile
 from django.http import FileResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 
-from .forms import UploadFileForm, PasswordForm
-from .helper import get_analytics, compress_to_zip, get_hash, queryToCsv, hashPassword
+from .forms import UploadFileForm, PasswordForm, ReportFileForm
+from .helper import get_analytics, compress_to_zip, get_hash, queryToCsv, hashPassword, verifyPassword
 from .models import UploadFiles, Analytics
 
 
@@ -108,11 +108,13 @@ def public_link_handle(request, public_link):
                 return FileResponse(upload_file.file, as_attachment=True, filename=upload_file.file_name)
             else:
                 return render(request, 'public_link.html',
-                              {"form": PasswordForm(expected_password=upload_file.password), "valid": "is-invalid"})
+                              {"form": PasswordForm(expected_password=not verifyPassword('', upload_file.password)),
+                               "valid": "is-invalid"})
 
         else:
             return render(request, 'public_link.html',
-                          {"form": PasswordForm(expected_password=upload_file.password), "valid": ""})
+                          {"form": PasswordForm(expected_password=not verifyPassword('', upload_file.password)),
+                           "valid": ""})
 
     else:
         raise Http404()
@@ -151,3 +153,17 @@ def analytic_link_handle(request, analytic_link):
                        "link": analytic_link})
     else:
         raise Http404()
+
+
+def report_link(request, public_link):
+    if request.method == "POST":
+        form = ReportFileForm(request.POST)
+        if form.is_valid():
+            model = form.save(commit=False)
+            model.public_link = get_object_or_404(UploadFiles, pk=public_link)
+            model.save()
+            return render(request, "report_link.success.html", )
+    else:
+        # GET request
+        form = ReportFileForm()
+        return render(request, "report_link.html", {"report_form": form, })
