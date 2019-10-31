@@ -40,7 +40,7 @@
 
             <div class="d-flex">
                 <input readonly class="form-control p-2 m-2 w-75" id="public"
-                       value="http://35.237.192.69/p/{{ public_link }}" onclick="this.select();"
+                       value="http://anonsend.tech/p/{{ public_link }}" onclick="this.select();"
                 />
 
                 <img class="my-3" alt="Copy to clipboard" onclick="copy_to_clipboard('public')"
@@ -55,7 +55,7 @@
                      data-content="
                             <div id='qr_pub' style=''></div>
                             <script>
-                                      new QRCode(document.getElementById('qr_pub'), 'http://35.237.192.69/{{ public_link }}');
+                                      new QRCode(document.getElementById('qr_pub'), 'http://anonsend.tech/{{ public_link }}');
                             </script>"
                 />
 
@@ -91,7 +91,7 @@
 
                 <input readonly
                        class="form-control p-2 m-2 w-75"
-                       id="analytic" value="http://35.237.192.69/analytics/{{ analytic_link }}"
+                       id="analytic" value="http://anonsend.tech/analytics/{{ analytic_link }}"
                        onclick="this.select();"
                 />
                 <img src="{% static "images/clippy.svg" %}"
@@ -110,7 +110,7 @@
                      data-content="
                         <div id='qr_analytic' style=''></div>
                         <script>
-                        new QRCode(document.getElementById('qr_analytic'), 'http://35.237.192.69/analytics/{{ analytic_link }}');
+                        new QRCode(document.getElementById('qr_analytic'), 'http:/anonsend.tech/analytics/{{ analytic_link }}');
                       </script>"
                 />
             </div>
