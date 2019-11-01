@@ -24,7 +24,7 @@ SECRET_KEY = 'che=x6jnu)1lq9xe=sy)jghx*t6w#qzh+nspccsix)@^l0@9z-'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['.anonsend.tech','34.93.47.115']
 
 # Application definition
 
