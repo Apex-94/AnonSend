@@ -117,7 +117,7 @@ Way to setup Django project with nginx + gunicorn (python 3 and Django > 2.0) Ub
     Allow Nginx full control 
     sudo ufw allow 'Nginx Full'
 
-    Configuration on SSl
+    Configuration of SSl
   1.
     
 
