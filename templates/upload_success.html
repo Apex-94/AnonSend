@@ -46,6 +46,9 @@
                 <img class="my-3" alt="Copy to clipboard" onclick="copy_to_clipboard('public')"
                      src="{% static "images/clippy.svg" %}" style="width: 30px;height:30px"
                      title="Copy to clipboard">
+					 
+					 
+					 
                 <img class="my-3 ml-1"
                      alt="Show QR"
                      title="QR Code"
@@ -58,6 +61,7 @@
                                       new QRCode(document.getElementById('qr_pub'), 'https://anonsend.tech/{{ public_link }}');
                             </script>"
                 />
+				 <button style="border-radius: 50%; border: none; color: white; background-color: black; cursor: pointer; text-align: center; display: inline-block; margin: 4px 2px; text-decoration: none;  padding: 20px; " id="btn" value="https://anonsend.tech/p/{{ public_link }}" onclick="tabopen();"> Open </button>
 
             </div>
         </div>
@@ -126,12 +130,43 @@
             html: true,
         })
     });
+	
+	<!-- $(function () { -->
+    <!-- $('#btn').click(function () { -->
+		<!-- String url=https://anonsend.tech/{{ public_link }}; -->
+        <!-- openNewTab(url) -->
+        <!-- return false; -->
+    <!-- }); -->
+<!-- }); -->
+
+function tabopen()
+{
+     var url = document.getElementById('btn').value;
+	 console.log(url);
+	 var win = window.open(url, '_blank');
+	 win.focus();
+
+}
+
+function openNewTab(link) {
+    var frm = $('<form   method="get" action="' + link + '" target="_blank"></form>')
+    $("body").append(frm);
+    frm.submit().remove();
+}
 
     function copy_to_clipboard(btn_type) {
         let text = document.getElementById(btn_type);
         text.select();
         document.execCommand("copy");
+		<!-- var url=https://anonsend.tech/{{ public_link }} -->
+		<!-- var win = window.open(url, '_blank'); -->
+		<!-- win.focus(); -->
+
+
+		
     }
+	
+	
 </script>
 
 <script src="{% static 'js/tilt.jquery.min.js' %}"> $('.js-tilt').tilt({
