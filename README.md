@@ -32,11 +32,16 @@ Way to setup Django project with nginx + gunicorn (python 3 and Django > 2.0) Ub
    Make sure from step 5 you are in your virtualenv
    Now we collect all the static content in the directory we configured above
    `python manage.py collectstatic`
-9. At this step your are basically done with your Django app only thing left is firewall rules and Nginx setup
+ 
+ 9.At this step your are basically done with your Django app only thing left is firewall rules and Nginx setup
    Create  firewall rule for port:8000 (can be anything your desire)
    Now we test the django application by running the server
-  ` python manage.py runserver 0.0.0.0:8000`  *this will run the server on port 8000 the ip will be the static ip of the server
-   you can check the app in your web browser by
+   
+  ` python manage.py runserver 0.0.0.0:8000`
+  
+  *this will run the server on port 8000 the ip will be the static ip of the server
+  
+  you can check the app in your web browser by
    http://your_domain_or_IP:8000
    If everything works as intended your will see ur index page or the default index djnago page
    Ctrl+c to exit server
@@ -57,6 +62,7 @@ Way to setup Django project with nginx + gunicorn (python 3 and Django > 2.0) Ub
    `deactivate`
 11.Now we create gunicorn system file which will take the role of starting the app 
   ` sudo nano /etc/systemd/system/gunicorn.service`
+  
    ```
    [Unit]
    Description=gunicorn daemon
@@ -86,12 +92,13 @@ Way to setup Django project with nginx + gunicorn (python 3 and Django > 2.0) Ub
     `sudo systemctl restart gunicorn`
  12.After setting up gunicorn now we nned to setup Nginx to route the traffic
    ` sudo nano /etc/nginx/sites-available/yourproject`
-```    
+   
+```shell    
      server {
     listen 80;
     server_name _domain_or_IP;
 
-   location = /favicon.ico { access_log off; log_not_found off; }
+    location = /favicon.ico { access_log off; log_not_found off; }
     location /static/ {
         root /home/yourubuntuuser/yourproject;
     }
@@ -104,18 +111,22 @@ Way to setup Django project with nginx + gunicorn (python 3 and Django > 2.0) Ub
 ```    
    save and close the file when you are finished
  13.Link the above file
+ 
     `sudo ln -s /etc/nginx/sites-available/yourproject /etc/nginx/sites-enabled`
+    
     `Test Nginx config `
+    
     `sudo nginx -t`
-    If no errors restart the server by typing
-    sudo systemctl restart nginx
+    
+   If no errors restart the server by typing
+   sudo systemctl restart nginx
  14.Now we need to traffic are contents to port 80 insted to 8000'
-    Delete the previously created open port
+   Delete the previously created open port
     `sudo ufw delete allow 8000`
     Allow Nginx full control 
     `sudo ufw allow 'Nginx Full'`
-
-    Configuration of SSl
+    
+   Configuration of SSL
   1.
     
 
