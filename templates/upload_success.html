@@ -42,9 +42,16 @@
                 <input readonly class="form-control p-2 m-2 w-75" id="public"
                        value="https://anonsend.tech/p/{{ public_link }}" onclick="this.select();"
                 />
+				
+				<!-- <img id="newt" class="my-3" value="https://anonsend.tech/p/{{ public_link }}" alt="Open in new tab" onclick="tabopen();" -->
+                     <!-- src="{% static "images/newtab.svg" %}" style="width: 25px; height: 30px; margin: 4px 10px; -->
+                     <!-- title="Open in new tab"> -->
+				<!-- <button class="my-3" style="border-radius: 50%; border: none; color: white; background-color: black; cursor: pointer; text-align: center; display: inline-block; margin: 4px 2px; text-decoration: none;  padding: 20px; " id="btn" value="https://anonsend.tech/p/{{ public_link }}" onclick="tabopen();"> Open </button> -->
+				<img class="my-3" src="{% static "images/newtab.svg" %}" style=" margin: 4px 10px; width: 26px; height: 30px;" onclick="tabopen('public');">
+
 
                 <img class="my-3" alt="Copy to clipboard" onclick="copy_to_clipboard('public')"
-                     src="{% static "images/clippy.svg" %}" style="width: 30px;height:30px"
+                     src="{% static "images/clippy.svg" %}" style="width: 30px;height: 30px"
                      title="Copy to clipboard">
 					 
 					 
@@ -61,7 +68,6 @@
                                       new QRCode(document.getElementById('qr_pub'), 'https://anonsend.tech/p/{{ public_link }}');
                             </script>"
                 />
-				 <button style="border-radius: 50%; border: none; color: white; background-color: black; cursor: pointer; text-align: center; display: inline-block; margin: 4px 2px; text-decoration: none;  padding: 20px; " id="btn" value="https://anonsend.tech/p/{{ public_link }}" onclick="tabopen();"> Open </button>
 
             </div>
         </div>
@@ -139,20 +145,20 @@
     <!-- }); -->
 <!-- }); -->
 
-function tabopen()
+function tabopen(btn)
 {
-     var url = document.getElementById('btn').value;
-	 console.log(url);
-	 var win = window.open(url, '_blank');
-	 win.focus();
+	let text = document.getElementById(btn);	 
+	console.log(text);
+	var win = window.open(text, '_blank');
+	win.focus();
 
 }
 
-function openNewTab(link) {
-    var frm = $('<form   method="get" action="' + link + '" target="_blank"></form>')
-    $("body").append(frm);
-    frm.submit().remove();
-}
+<!-- function openNewTab(link) { -->
+    <!-- var frm = $('<form   method="get" action="' + link + '" target="_blank"></form>') -->
+    <!-- $("body").append(frm); -->
+    <!-- frm.submit().remove(); -->
+<!-- } -->
 
     function copy_to_clipboard(btn_type) {
         let text = document.getElementById(btn_type);
