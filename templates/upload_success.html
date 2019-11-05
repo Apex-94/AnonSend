@@ -46,8 +46,8 @@
 				<!-- <img id="newt" class="my-3" value="https://anonsend.tech/p/{{ public_link }}" alt="Open in new tab" onclick="tabopen();" -->
                      <!-- src="{% static "images/newtab.svg" %}" style="width: 25px; height: 30px; margin: 4px 10px; -->
                      <!-- title="Open in new tab"> -->
-				<!-- <button class="my-3" style="border-radius: 50%; border: none; color: white; background-color: black; cursor: pointer; text-align: center; display: inline-block; margin: 4px 2px; text-decoration: none;  padding: 20px; " id="btn" value="https://anonsend.tech/p/{{ public_link }}" onclick="tabopen();"> Open </button> -->
-				<img class="my-3" src="{% static "images/newtab.svg" %}" style=" margin: 4px 10px; width: 26px; height: 30px;" onclick="tabopen('public')">
+				<button style=" color: transparent; background-color: transparent; border: none;"  id="btn" value="https://anonsend.tech/p/{{ public_link }}" onclick="tabopen();"><img class="my-3" style=" margin: 4px 10px; width: 26px; height: 30px;" src="{% static "images/newtab.svg" %}" /></button>
+				<!-- <img class="my-3" src="{% static "images/newtab.svg" %}" id="btn" value="https://anonsend.tech/p/{{ public_link }}" onclick="tabopen();" style=" margin: 4px 10px; width: 26px; height: 30px;" /> -->
 
 
                 <img class="my-3" alt="Copy to clipboard" onclick="copy_to_clipboard('public')"
@@ -60,7 +60,7 @@
                      alt="Show QR"
                      title="QR Code"
                      src="{% static "images/qr.svg" %}"
-                     style="width: 30px;height:30px"
+                     style="width: 30px;height: 30px"
                      data-toggle="popover"
                      data-content="
                             <div id='qr_pub' style=''></div>
@@ -145,9 +145,9 @@
     <!-- }); -->
 <!-- }); -->
 
-function tabopen(btn)
+function tabopen()
 {
-	let text = document.getElementById(btn);	 
+	let text = document.getElementById("btn").value;	 
 	console.log(text);
 	var win = window.open(text, '_blank');
 	win.focus();
