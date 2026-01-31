@@ -40,14 +40,14 @@
 
             <div class="d-flex">
                 <input readonly class="form-control p-2 m-2 w-75" id="public"
-                       value="https://anonsend.tech/p/{{ public_link }}" onclick="this.select();"
+                       value="{{ public_url }}" onclick="this.select();"
                 />
 				
-				<!-- <img id="newt" class="my-3" value="https://anonsend.tech/p/{{ public_link }}" alt="Open in new tab" onclick="tabopen();" -->
+				<!-- <img id="newt" class="my-3" value="{{ public_url }}" alt="Open in new tab" onclick="tabopen();" -->
                      <!-- src="{% static "images/newtab.svg" %}" style="width: 25px; height: 30px; margin: 4px 10px; -->
                      <!-- title="Open in new tab"> -->
-				<button style=" color: transparent; background-color: transparent; border: none;"  id="btn" value="https://anonsend.tech/p/{{ public_link }}" onclick="tabopen();"><img class="my-3" style=" margin: 4px 10px; width: 26px; height: 30px;" src="{% static "images/newtab.svg" %}" /></button>
-				<!-- <img class="my-3" src="{% static "images/newtab.svg" %}" id="btn" value="https://anonsend.tech/p/{{ public_link }}" onclick="tabopen();" style=" margin: 4px 10px; width: 26px; height: 30px;" /> -->
+				<button style=" color: transparent; background-color: transparent; border: none;"  id="btn" value="{{ public_url }}" onclick="tabopen();"><img class="my-3" style=" margin: 4px 10px; width: 26px; height: 30px;" src="{% static "images/newtab.svg" %}" /></button>
+				<!-- <img class="my-3" src="{% static "images/newtab.svg" %}" id="btn" value="{{ public_url }}" onclick="tabopen();" style=" margin: 4px 10px; width: 26px; height: 30px;" /> -->
 
 
                 <img class="my-3" alt="Copy to clipboard" onclick="copy_to_clipboard('public')"
@@ -65,7 +65,7 @@
                      data-content="
                             <div id='qr_pub' style=''></div>
                             <script>
-                                      new QRCode(document.getElementById('qr_pub'), 'https://anonsend.tech/p/{{ public_link }}');
+                                      new QRCode(document.getElementById('qr_pub'), '{{ public_url }}');
                             </script>"
                 />
 
@@ -101,7 +101,7 @@
 
                 <input readonly
                        class="form-control p-2 m-2 w-75"
-                       id="analytic" value="https://anonsend.tech/analytics/{{ analytic_link }}"
+                       id="analytic" value="{{ analytic_url }}"
                        onclick="this.select();"
                 />
 				<button style=" color: transparent; background-color: transparent; border: none;"  id="btna" value="analytics/{{ analytic_link }}" onclick="tabopena();"><img class="my-3" style=" margin: 4px 10px; width: 26px; height: 30px;" src="{% static "images/newtab.svg" %}" /></button>
@@ -122,7 +122,7 @@
                      data-content="
                         <div id='qr_analytic' style=''></div>
                         <script>
-                        new QRCode(document.getElementById('qr_analytic'), 'https:/anonsend.tech/analytics/{{ analytic_link }}');
+                        new QRCode(document.getElementById('qr_analytic'), '{{ analytic_url }}');
                       </script>"
                 />
             </div>
@@ -141,7 +141,7 @@
 	
 	<!-- $(function () { -->
     <!-- $('#btn').click(function () { -->
-		<!-- String url=https://anonsend.tech/{{ public_link }}; -->
+		<!-- String url={{ public_url }}; -->
         <!-- openNewTab(url) -->
         <!-- return false; -->
     <!-- }); -->
@@ -174,7 +174,7 @@ function tabopen()
         let text = document.getElementById(btn_type);
         text.select();
         document.execCommand("copy");
-		<!-- var url=https://anonsend.tech/{{ public_link }} -->
+		<!-- var url={{ public_url }} -->
 		<!-- var win = window.open(url, '_blank'); -->
 		<!-- win.focus(); -->
 
