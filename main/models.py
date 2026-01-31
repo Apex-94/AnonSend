@@ -47,6 +47,6 @@ class Analytic(models.Model):
 
 class ReportLink(models.Model):
     upload_file = models.ForeignKey(UploadFile, on_delete=models.CASCADE)
-    reason = models.CharField(max_length=10, choices=REPORT_CHOICES, default=REPORT_CHOICES[0])
+    reason = models.CharField(max_length=15, choices=REPORT_CHOICES, default=REPORT_CHOICES[0])
     description = models.TextField(max_length=150)
     report_time = models.DateTimeField(auto_now_add=True)

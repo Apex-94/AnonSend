@@ -3,6 +3,7 @@ from collections import Counter
 from django.core.files.uploadedfile import UploadedFile
 from django.http import FileResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 
 from .forms import UploadFileForm, PasswordForm, ReportFileForm
 from .helper import *
@@ -80,8 +81,15 @@ def uploaded_link(request):
                 name = "/".join(name)
                 model.file.save(name, file)
             model.save()
+            # Build absolute URLs dynamically
+            public_url = request.build_absolute_uri(reverse('public_link', args=[model.public_link]))
+            analytic_url = request.build_absolute_uri(reverse('analytic_link', args=[model.analytic_link]))
+            
             return render(request, 'upload_success.html',
-                          {"public_link": model.public_link, "analytic_link": model.analytic_link})
+                          {"public_link": model.public_link, 
+                           "analytic_link": model.analytic_link,
+                           "public_url": public_url,
+                           "analytic_url": analytic_url})
         else:
             # Form is invalid
             return redirect(index)

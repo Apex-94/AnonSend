@@ -9,6 +9,31 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/animate.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <style>
+        #upload-progress-container {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        #upload-progress-bar {
+            transition: width 0.3s ease;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        #upload-status {
+            color: #666;
+            font-size: 13px;
+        }
+        #upload-submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .progress {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
 <body class="container-login100">
 <div class="limiter">
@@ -47,8 +72,19 @@
                     <h5>{{ form.visible_fields.3.label_tag }}</h5>
                     {{ form.visible_fields.3|addclass:"form-control" }}
                 </div>
+                <!-- Progress Bar -->
+                <div id="upload-progress-container" class="wrap-input100" style="display: none;">
+                    <div class="progress" style="height: 25px;">
+                        <div id="upload-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" 
+                             role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                            <span id="upload-progress-text">0%</span>
+                        </div>
+                    </div>
+                    <div id="upload-status" class="mt-2 text-center" style="font-size: 14px;"></div>
+                </div>
+                
                 <div class="container-login100-form-btn">
-                    <input class="login100-form-btn" value="Upload" type="submit"/>
+                    <input id="upload-submit-btn" class="login100-form-btn" value="Upload" type="submit"/>
                 </div>
             </form>
         </div>
@@ -71,8 +107,160 @@
         }
         if (total > 104857600) {
             alert("File size limit exceeded");
+            return false;
         }
+        return true;
     }
+
+    // Upload progress tracking
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('.login100-form');
+        const progressContainer = document.getElementById('upload-progress-container');
+        const progressBar = document.getElementById('upload-progress-bar');
+        const progressText = document.getElementById('upload-progress-text');
+        const uploadStatus = document.getElementById('upload-status');
+        const submitBtn = document.getElementById('upload-submit-btn');
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validate file size first
+            if (!validateSize()) {
+                return false;
+            }
+            
+            // Get file info for display
+            const fileInput = document.getElementById('id_file');
+            const fileCount = fileInput.files.length;
+            let fileInfo = '';
+            if (fileCount === 1) {
+                fileInfo = fileInput.files[0].name;
+            } else {
+                fileInfo = `${fileCount} files`;
+            }
+            
+            // Show progress bar
+            progressContainer.style.display = 'block';
+            submitBtn.disabled = true;
+            submitBtn.value = 'Uploading...';
+            uploadStatus.textContent = `Preparing upload: ${fileInfo}...`;
+            progressBar.style.width = '0%';
+            progressText.textContent = '0%';
+            
+            // Initialize upload start time for speed calculation
+            const uploadStartTime = Date.now();
+            
+            // Create FormData from form
+            const formData = new FormData(form);
+            
+            // Create XMLHttpRequest for progress tracking
+            const xhr = new XMLHttpRequest();
+            
+            // Track upload progress
+            xhr.upload.addEventListener('progress', function(e) {
+                if (e.lengthComputable) {
+                    const percentComplete = (e.loaded / e.total) * 100;
+                    const percentRounded = Math.round(percentComplete);
+                    
+                    progressBar.style.width = percentComplete + '%';
+                    progressBar.setAttribute('aria-valuenow', percentRounded);
+                    progressText.textContent = percentRounded + '%';
+                    
+                    // Update status text with time remaining
+                    const loadedMB = (e.loaded / (1024 * 1024)).toFixed(2);
+                    const totalMB = (e.total / (1024 * 1024)).toFixed(2);
+                    
+                    // Calculate time remaining
+                    if (e.loaded > 0) {
+                        const speed = e.loaded / ((Date.now() - uploadStartTime) / 1000);
+                        const remainingBytes = e.total - e.loaded;
+                        const remainingSeconds = remainingBytes / speed;
+                        
+                        let timeRemainingText;
+                        if (remainingSeconds < 60) {
+                            timeRemainingText = Math.ceil(remainingSeconds) + 's';
+                        } else {
+                            timeRemainingText = Math.ceil(remainingSeconds / 60) + 'm';
+                        }
+                        uploadStatus.textContent = `Uploading ${fileInfo}: ${loadedMB} MB / ${totalMB} MB (${timeRemainingText} remaining)`;
+                    } else {
+                        uploadStatus.textContent = `Uploading ${fileInfo}: ${loadedMB} MB / ${totalMB} MB`;
+                    }
+                }
+            });
+            
+            // Handle completion
+            xhr.addEventListener('load', function() {
+                if (xhr.status === 200) {
+                    progressBar.style.width = '100%';
+                    progressText.textContent = '100%';
+                    uploadStatus.textContent = 'Upload complete! Redirecting...';
+                    progressBar.classList.remove('progress-bar-animated');
+                    progressBar.classList.add('bg-success');
+                    
+                    // Check if response contains error page (size limit)
+                    if (xhr.responseText.includes('size_limit') || xhr.responseText.includes('Size limit')) {
+                        handleUploadError('File size exceeds the 100MB limit.');
+                        return;
+                    }
+                    
+                    // Redirect to success page
+                    setTimeout(function() {
+                        // Replace entire document with response
+                        document.open();
+                        document.write(xhr.responseText);
+                        document.close();
+                    }, 500);
+                } else if (xhr.status === 400 || xhr.status === 403) {
+                    handleUploadError('Invalid request. Please check your form data.');
+                } else {
+                    handleUploadError('Upload failed. Please try again.');
+                }
+            });
+            
+            // Handle errors
+            xhr.addEventListener('error', function() {
+                handleUploadError('Network error. Please check your connection and try again.');
+            });
+            
+            // Handle abort
+            xhr.addEventListener('abort', function() {
+                handleUploadError('Upload cancelled.');
+            });
+            
+            // Handle timeout (if set)
+            xhr.addEventListener('timeout', function() {
+                handleUploadError('Upload timeout. Please try again.');
+            });
+            
+            // Send request
+            xhr.open('POST', form.action);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            
+            // Set timeout to 10 minutes for large files
+            xhr.timeout = 600000;
+            
+            xhr.send(formData);
+        });
+        
+        function handleUploadError(message) {
+            progressBar.classList.remove('progress-bar-animated');
+            progressBar.classList.add('bg-danger');
+            progressBar.style.width = '100%';
+            progressText.textContent = 'Error';
+            uploadStatus.textContent = message;
+            submitBtn.disabled = false;
+            submitBtn.value = 'Upload';
+            
+            // Hide progress bar after 5 seconds
+            setTimeout(function() {
+                progressContainer.style.display = 'none';
+                progressBar.classList.remove('bg-danger');
+                progressBar.classList.add('progress-bar-animated');
+                progressBar.style.width = '0%';
+            }, 5000);
+        }
+    });
 </script>
 </body>
 </html>
