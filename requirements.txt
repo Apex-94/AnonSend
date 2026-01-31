@@ -1,3 +1,4 @@
-bcrypt==3.1.7
-Django==2.2.6
-user_agents==2.0
+Django==4.2.16
+bcrypt==4.2.0
+user-agents==2.2.0
+gunicorn==21.2.0
