@@ -24,7 +24,9 @@ SECRET_KEY = 'che=x6jnu)1lq9xe=sy)jghx*t6w#qzh+nspccsix)@^l0@9z-'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.anonsend.tech','34.93.47.115','127.0.0.1']
+# ALLOWED_HOSTS can be configured via environment variable ALLOWED_HOSTS (comma-separated)
+# Default includes localhost for development
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 
 # Application definition
 
@@ -68,6 +70,10 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'AnonSend.wsgi.application'
+
+# Default primary key field type
+# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases

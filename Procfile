@@ -1,1 +1,1 @@
-web: gunicon django_project.wsgi
+web: gunicorn AnonSend.wsgi:application

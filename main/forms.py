@@ -23,12 +23,23 @@ DATE_CHOICES = [
 ]
 
 
+class MultipleFileInput(forms.FileInput):
+    """Custom widget to support multiple file uploads"""
+    def __init__(self, attrs=None):
+        super().__init__(attrs)
+        if attrs is not None:
+            self.attrs = attrs.copy()
+        else:
+            self.attrs = {}
+        self.attrs['multiple'] = True
+
+
 class UploadFileForm(forms.ModelForm):
     class Meta:
         model = UploadFile
         fields = ('file', 'expires_at', 'max_downloads', 'password')
         widgets = {
-            'file': forms.ClearableFileInput(attrs={"multiple": True}),
+            'file': MultipleFileInput(),
             'password': forms.PasswordInput(),
             'expires_at': forms.Select(choices=DATE_CHOICES)
         }
